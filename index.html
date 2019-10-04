@@ -386,14 +386,15 @@ theme_set(theme_bw())</code></pre>
 ## .... ...... .................. ....... .........................................................................................................
 ## See problems(...) for more details.</code></pre>
 <pre class="r"><code>df %&gt;% 
-  filter(!is.na(koryakov_db_id)) -&gt;
+  filter(!is.na(koryakov_db_id)) %&gt;% 
+  distinct() -&gt;
   filtered_df
 
 filtered_df %&gt;% 
   write_csv(&quot;data/filtered_data.csv&quot;, na = &quot;&quot;)
 
 str(filtered_df)</code></pre>
-<pre><code>## Classes &#39;spec_tbl_df&#39;, &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;: 2345 obs. of  22 variables:
+<pre><code>## Classes &#39;spec_tbl_df&#39;, &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;: 2263 obs. of  22 variables:
 ##  $ koryakov_db_id: num  481 3887 3943 3327 3915 ...
 ##  $ eng_vil_name  : chr  NA NA NA NA ...
 ##  $ rus_vil_name  : chr  &quot;? Бехвалутчи/Бехахутли&quot; &quot;(база отдыха)&quot; &quot;(Старый) Гапцах&quot; &quot;(старый) Хорель&quot; ...
@@ -415,38 +416,7 @@ str(filtered_df)</code></pre>
 ##  $ Republic      : chr  NA NA NA NA ...
 ##  $ Region        : logi  NA NA NA NA NA NA ...
 ##  $ elevation     : num  NA NA NA NA NA ...
-##  $ LevK_comments : chr  NA NA NA NA ...
-##  - attr(*, &quot;problems&quot;)=Classes &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;: 51 obs. of  5 variables:
-##   ..$ row     : int  2346 2347 2348 2349 2350 2351 2352 2368 2369 2370 ...
-##   ..$ col     : chr  &quot;Region&quot; &quot;Region&quot; &quot;Region&quot; &quot;Region&quot; ...
-##   ..$ expected: chr  &quot;1/0/T/F/TRUE/FALSE&quot; &quot;1/0/T/F/TRUE/FALSE&quot; &quot;1/0/T/F/TRUE/FALSE&quot; &quot;1/0/T/F/TRUE/FALSE&quot; ...
-##   ..$ actual  : chr  &quot;Belokan&quot; &quot;Belokan&quot; &quot;Belokan&quot; &quot;Belokan&quot; ...
-##   ..$ file    : chr  &quot;&#39;https://raw.githubusercontent.com/sverhees/master_villages/master/data/merged_all_census_and_samira.csv&#39;&quot; &quot;&#39;https://raw.githubusercontent.com/sverhees/master_villages/master/data/merged_all_census_and_samira.csv&#39;&quot; &quot;&#39;https://raw.githubusercontent.com/sverhees/master_villages/master/data/merged_all_census_and_samira.csv&#39;&quot; &quot;&#39;https://raw.githubusercontent.com/sverhees/master_villages/master/data/merged_all_census_and_samira.csv&#39;&quot; ...
-##  - attr(*, &quot;spec&quot;)=
-##   .. cols(
-##   ..   koryakov_db_id = col_double(),
-##   ..   eng_vil_name = col_character(),
-##   ..   rus_vil_name = col_character(),
-##   ..   lang_1_K = col_character(),
-##   ..   lang_2_K = col_character(),
-##   ..   lang_1_S = col_character(),
-##   ..   lang_2_S = col_character(),
-##   ..   same_languages = col_logical(),
-##   ..   name_1885 = col_character(),
-##   ..   name_1895 = col_character(),
-##   ..   name_1926 = col_character(),
-##   ..   name_2010 = col_character(),
-##   ..   census_1885 = col_double(),
-##   ..   census_1895 = col_double(),
-##   ..   census_1926 = col_double(),
-##   ..   census_2010 = col_double(),
-##   ..   Lat = col_double(),
-##   ..   Lon = col_double(),
-##   ..   Republic = col_character(),
-##   ..   Region = col_logical(),
-##   ..   elevation = col_double(),
-##   ..   LevK_comments = col_character()
-##   .. )</code></pre>
+##  $ LevK_comments : chr  NA NA NA NA ...</code></pre>
 <ul>
 <li><code>koryakov_db_id</code> – id info from Y. Koryakov database</li>
 <li><code>eng_vil_name</code> – English village name from Samira’s db</li>
@@ -467,8 +437,11 @@ str(filtered_df)</code></pre>
 <li><code>Lat</code> – latitude (from S. Verhess)</li>
 <li><code>Lon</code> – longitude (from S. Verhess)</li>
 <li><code>Republic</code> – info about Republic (from S. Verhees)</li>
-<li><code>elevation</code> – elevation data (collected by G. Moroz from Google) LevK_comments – comments by student who made a correspondence between Y. Koryakov’s and S. Verhess’s dataset. Sometime there is info about duplicates and so on.</li>
+<li><code>elevation</code> – elevation data (collected by G. Moroz from Google)</li>
 </ul>
+</div>
+<div id="section" class="section level2">
+<h2></h2>
 </div>
 
 

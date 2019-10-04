@@ -28,7 +28,8 @@ The result dataset has the following structure:
 ```{r, message=FALSE}
 df <- read_csv("https://raw.githubusercontent.com/sverhees/master_villages/master/data/merged_all_census_and_samira.csv")
 df %>% 
-  filter(!is.na(koryakov_db_id)) ->
+  filter(!is.na(koryakov_db_id)) %>% 
+  distinct() ->
   filtered_df
 
 filtered_df %>% 
@@ -57,4 +58,5 @@ str(filtered_df)
 * `Lon` -- longitude (from S. Verhess)
 * `Republic` --  info about Republic (from S. Verhees)
 * `elevation` -- elevation data (collected by G. Moroz from Google)
-LevK_comments -- comments by student who made a correspondence between Y. Koryakov's and S. Verhess's dataset. Sometime there is info about duplicates and so on.
+
+## 
