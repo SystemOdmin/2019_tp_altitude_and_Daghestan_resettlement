@@ -376,21 +376,6 @@ theme_set(theme_bw())</code></pre>
 <p><a href="https://github.com/sverhees/master_villages">A repository</a> provided by Samira Verhees contains a dataset with all East Caucasian villages, their coordinates and the language spoken there. We merged it with dataset provided by Yury Koryakov which contains information about number of speakers in each village according to censuses in Russia and Soviet Union (add links…).</p>
 <p>The result dataset has the following structure:</p>
 <pre class="r"><code>df &lt;- read_csv(&quot;https://raw.githubusercontent.com/sverhees/master_villages/master/data/merged_all_census_and_samira.csv&quot;)</code></pre>
-<pre><code>## Parsed with column specification:
-## cols(
-##   .default = col_character(),
-##   koryakov_db_id = col_double(),
-##   same_languages = col_logical(),
-##   census_1885 = col_double(),
-##   census_1895 = col_double(),
-##   census_1926 = col_double(),
-##   census_2010 = col_double(),
-##   Lat = col_double(),
-##   Lon = col_double(),
-##   Region = col_logical(),
-##   elevation = col_double()
-## )</code></pre>
-<pre><code>## See spec(...) for full column specifications.</code></pre>
 <pre><code>## Warning: 51 parsing failures.
 ##  row    col           expected  actual                                                                                                      file
 ## 2346 Region 1/0/T/F/TRUE/FALSE Belokan &#39;https://raw.githubusercontent.com/sverhees/master_villages/master/data/merged_all_census_and_samira.csv&#39;
@@ -401,15 +386,14 @@ theme_set(theme_bw())</code></pre>
 ## .... ...... .................. ....... .........................................................................................................
 ## See problems(...) for more details.</code></pre>
 <pre class="r"><code>df %&gt;% 
-  filter(!is.na(koryakov_db_id)) %&gt;% 
-  select(-Region) -&gt;
+  filter(!is.na(koryakov_db_id)) -&gt;
   filtered_df
 
 filtered_df %&gt;% 
   write_csv(&quot;data/filtered_data.csv&quot;, na = &quot;&quot;)
 
 str(filtered_df)</code></pre>
-<pre><code>## Classes &#39;spec_tbl_df&#39;, &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;: 2345 obs. of  21 variables:
+<pre><code>## Classes &#39;spec_tbl_df&#39;, &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;: 2345 obs. of  22 variables:
 ##  $ koryakov_db_id: num  481 3887 3943 3327 3915 ...
 ##  $ eng_vil_name  : chr  NA NA NA NA ...
 ##  $ rus_vil_name  : chr  &quot;? Бехвалутчи/Бехахутли&quot; &quot;(база отдыха)&quot; &quot;(Старый) Гапцах&quot; &quot;(старый) Хорель&quot; ...
@@ -429,6 +413,7 @@ str(filtered_df)</code></pre>
 ##  $ Lat           : num  NA NA NA NA NA ...
 ##  $ Lon           : num  NA NA NA NA NA ...
 ##  $ Republic      : chr  NA NA NA NA ...
+##  $ Region        : logi  NA NA NA NA NA NA ...
 ##  $ elevation     : num  NA NA NA NA NA ...
 ##  $ LevK_comments : chr  NA NA NA NA ...
 ##  - attr(*, &quot;problems&quot;)=Classes &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;: 51 obs. of  5 variables:
@@ -462,13 +447,6 @@ str(filtered_df)</code></pre>
 ##   ..   elevation = col_double(),
 ##   ..   LevK_comments = col_character()
 ##   .. )</code></pre>
-<pre class="r"><code>colnames(filtered_df)</code></pre>
-<pre><code>##  [1] &quot;koryakov_db_id&quot; &quot;eng_vil_name&quot;   &quot;rus_vil_name&quot;   &quot;lang_1_K&quot;      
-##  [5] &quot;lang_2_K&quot;       &quot;lang_1_S&quot;       &quot;lang_2_S&quot;       &quot;same_languages&quot;
-##  [9] &quot;name_1885&quot;      &quot;name_1895&quot;      &quot;name_1926&quot;      &quot;name_2010&quot;     
-## [13] &quot;census_1885&quot;    &quot;census_1895&quot;    &quot;census_1926&quot;    &quot;census_2010&quot;   
-## [17] &quot;Lat&quot;            &quot;Lon&quot;            &quot;Republic&quot;       &quot;elevation&quot;     
-## [21] &quot;LevK_comments&quot;</code></pre>
 <ul>
 <li><code>koryakov_db_id</code> – id info from Y. Koryakov database</li>
 <li><code>eng_vil_name</code> – English village name from Samira’s db</li>

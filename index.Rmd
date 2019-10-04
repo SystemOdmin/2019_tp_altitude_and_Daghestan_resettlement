@@ -25,18 +25,16 @@ A dataset provided by [Samira Verhees 2019] could be found [here](https://github
 
 The result dataset has the following structure:
 
-```{r}
+```{r, message=FALSE}
 df <- read_csv("https://raw.githubusercontent.com/sverhees/master_villages/master/data/merged_all_census_and_samira.csv")
 df %>% 
-  filter(!is.na(koryakov_db_id)) %>% 
-  select(-Region) ->
+  filter(!is.na(koryakov_db_id)) ->
   filtered_df
 
 filtered_df %>% 
   write_csv("data/filtered_data.csv", na = "")
 
 str(filtered_df)
-colnames(filtered_df)
 ```
 
 * `koryakov_db_id` -- id info from Y. Koryakov database
