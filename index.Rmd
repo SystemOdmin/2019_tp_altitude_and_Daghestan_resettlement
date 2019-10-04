@@ -28,7 +28,7 @@ The result dataset has the following structure:
 ```{r, message=FALSE}
 df <- read_csv("data/merged_all_census_and_samira.csv")
 df %>% 
-  filter(!is.na(koryakov_db_id)) %>% 
+  filter(Region == "Daghestan") %>% 
   distinct() ->
   filtered_df
 
