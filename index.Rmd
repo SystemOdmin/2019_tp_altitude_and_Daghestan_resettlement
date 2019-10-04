@@ -1,0 +1,62 @@
+---
+title: 'Correlation of the altitude and number of speakers: case of Daghestan resettlement
+  in XX century'
+author: "L. Kazakevich, G. Moroz"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, message = FALSE}
+library(tidyverse)
+theme_set(theme_bw())
+```
+
+
+## Get dataset
+
+A dataset provided by [Samira Verhees 2019] could be found [here](https://github.com/sverhees/master_villages). 
+
+[A repository](https://github.com/sverhees/master_villages) provided by Samira Verhees contains a dataset with all East Caucasian villages, their coordinates and the language spoken there. We merged it with dataset provided by Yury Koryakov which contains information about number of speakers in each village according to censuses in Russia and Soviet Union (add links...).
+
+The result dataset has the following structure:
+
+```{r}
+df <- read_csv("https://raw.githubusercontent.com/sverhees/master_villages/master/data/merged_all_census_and_samira.csv")
+df %>% 
+  filter(Republic == "Daghestan",
+         !is.na(koryakov_db_id)) %>% 
+  select(-Region) ->
+  filtered_df
+
+filtered_df %>% 
+  write_csv("data/filtered_data.csv")
+
+str(filtered_df)
+colnames(filtered_df)
+```
+* `koryakov_db_id`
+* `eng_vil_name`
+* `rus_vil_name`
+* `lang_1_K`
+* `lang_2_K`
+* `lang_1_S`
+* `lang_2_S`
+* `same_languages`
+* `name_1885`
+* `name_1895`
+* `name_1926`
+* `name_2010`
+* `census_1885`
+* `census_1895`
+* `census_1926`
+* `census_2010`
+* `Lat`
+* `Lon`
+* `Republic`
+* `Region`
+* `elevation`
