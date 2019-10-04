@@ -26,7 +26,7 @@ A dataset provided by [Samira Verhees 2019] could be found [here](https://github
 The result dataset has the following structure:
 
 ```{r, message=FALSE}
-df <- read_csv("https://raw.githubusercontent.com/sverhees/master_villages/master/data/merged_all_census_and_samira.csv")
+df <- read_csv("data/merged_all_census_and_samira.csv")
 df %>% 
   filter(!is.na(koryakov_db_id)) %>% 
   distinct() ->
@@ -59,4 +59,11 @@ str(filtered_df)
 * `Republic` --  info about Republic (from S. Verhees)
 * `elevation` -- elevation data (collected by G. Moroz from Google)
 
-## 
+## Correlation of altitude and number of people
+
+```{r}
+df <- read_csv("data/filtered_data.csv")
+df %>% 
+  select()
+```
+
