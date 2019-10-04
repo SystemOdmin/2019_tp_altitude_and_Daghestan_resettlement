@@ -28,8 +28,8 @@ The result dataset has the following structure:
 ```{r, message=FALSE}
 df <- read_csv("data/merged_all_census_and_samira.csv")
 df %>% 
-  filter(Region == "Daghestan") %>% 
-  distinct() ->
+  filter(Republic == "Daghestan") %>% 
+  distinct()->
   filtered_df
 
 filtered_df %>% 

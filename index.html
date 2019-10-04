@@ -377,40 +377,40 @@ theme_set(theme_bw())</code></pre>
 <p>The result dataset has the following structure:</p>
 <pre class="r"><code>df &lt;- read_csv(&quot;data/merged_all_census_and_samira.csv&quot;)
 df %&gt;% 
-  filter(Region == &quot;Daghestan&quot;) %&gt;% 
-  distinct() -&gt;
+  filter(Republic == &quot;Daghestan&quot;) %&gt;% 
+  distinct()-&gt;
   filtered_df
 
 filtered_df %&gt;% 
   write_csv(&quot;data/filtered_data.csv&quot;, na = &quot;&quot;)
 
 str(filtered_df)</code></pre>
-<pre><code>## Classes &#39;spec_tbl_df&#39;, &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;: 0 obs. of  25 variables:
-##  $ koryakov_bd_id: num 
-##  $ eng_vil_name  : chr 
-##  $ rus_vil_name  : chr 
-##  $ lang_1_K      : chr 
-##  $ lang_2_K      : chr 
-##  $ lang_1_S      : chr 
-##  $ lang_2_S      : chr 
-##  $ same_languages: logi 
-##  $ name_1885     : chr 
-##  $ name_1895     : chr 
-##  $ name_1926     : chr 
-##  $ name_2010     : chr 
-##  $ census_1885   : num 
-##  $ census_1895   : num 
-##  $ census_1926   : num 
-##  $ census_2010   : num 
-##  $ Lat           : num 
-##  $ Lon           : num 
-##  $ Republic      : chr 
-##  $ Region        : chr 
-##  $ elevation     : num 
-##  $ LevK_comments : chr 
-##  $ Region_K      : chr 
-##  $ lat_K         : chr 
-##  $ lon_K         : num</code></pre>
+<pre><code>## Classes &#39;spec_tbl_df&#39;, &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;: 2530 obs. of  25 variables:
+##  $ koryakov_bd_id: num  481 3887 3943 3327 3915 ...
+##  $ eng_vil_name  : chr  NA NA NA NA ...
+##  $ rus_vil_name  : chr  &quot;? Бехвалутчи/Бехахутли&quot; &quot;(база отдыха)&quot; &quot;(Старый) Гапцах&quot; &quot;(старый) Хорель&quot; ...
+##  $ lang_1_K      : chr  &quot;Tindi&quot; NA &quot;Lezgian&quot; &quot;Lezgian&quot; ...
+##  $ lang_2_K      : chr  NA NA NA NA ...
+##  $ lang_1_S      : chr  NA NA NA NA ...
+##  $ lang_2_S      : chr  NA NA NA NA ...
+##  $ same_languages: logi  NA NA NA NA NA NA ...
+##  $ name_1885     : chr  NA NA &quot;Гапца (Гепце)&quot; &quot;Хорал (Хюраль)&quot; ...
+##  $ name_1895     : chr  NA NA &quot;Гапца (Гепце, Хабца, Хапцагар)&quot; &quot;Хораль (Хюраль)&quot; ...
+##  $ name_1926     : chr  &quot;Бехоркучи&quot; NA &quot;Гопцах&quot; &quot;Хорель&quot; ...
+##  $ name_2010     : chr  &quot;Бехвалутчи&quot; NA NA NA ...
+##  $ census_1885   : num  NA NA 939 417 NA NA NA NA NA 149 ...
+##  $ census_1895   : num  NA NA 883 422 NA NA NA NA NA 145 ...
+##  $ census_1926   : num  45 NA 1034 547 NA ...
+##  $ census_2010   : num  26 NA NA NA NA ...
+##  $ Lat           : num  NA NA NA NA NA ...
+##  $ Lon           : num  NA NA NA NA NA ...
+##  $ Republic      : chr  &quot;Daghestan&quot; &quot;Daghestan&quot; &quot;Daghestan&quot; &quot;Daghestan&quot; ...
+##  $ Region        : chr  &quot;Цумадинский&quot; NA &quot;Магарамкентский&quot; &quot;Магарамкентский&quot; ...
+##  $ elevation     : num  NA NA NA NA NA ...
+##  $ LevK_comments : chr  NA NA NA NA ...
+##  $ Region_K      : chr  &quot;Цумадинский&quot; NA &quot;Магарамкентский&quot; &quot;Магарамкентский&quot; ...
+##  $ lat_K         : chr  NA NA &quot;41,451476° 47,931201°&quot; &quot;41,562911° 48,197384°&quot; ...
+##  $ lon_K         : num  NA NA NA NA NA NA NA NA NA NA ...</code></pre>
 <ul>
 <li><code>koryakov_db_id</code> – id info from Y. Koryakov database</li>
 <li><code>eng_vil_name</code> – English village name from Samira’s db</li>
@@ -439,12 +439,22 @@ str(filtered_df)</code></pre>
 <pre class="r"><code>df &lt;- read_csv(&quot;data/filtered_data.csv&quot;)</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
-##   .default = col_character()
+##   .default = col_character(),
+##   koryakov_bd_id = col_double(),
+##   same_languages = col_logical(),
+##   census_1885 = col_double(),
+##   census_1895 = col_double(),
+##   census_1926 = col_double(),
+##   census_2010 = col_double(),
+##   Lat = col_double(),
+##   Lon = col_double(),
+##   elevation = col_double(),
+##   lon_K = col_double()
 ## )</code></pre>
 <pre><code>## See spec(...) for full column specifications.</code></pre>
 <pre class="r"><code>df %&gt;% 
   select()</code></pre>
-<pre><code>## # A tibble: 0 x 0</code></pre>
+<pre><code>## # A tibble: 2,530 x 0</code></pre>
 </div>
 
 
