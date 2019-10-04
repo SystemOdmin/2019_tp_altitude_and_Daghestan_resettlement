@@ -28,35 +28,35 @@ The result dataset has the following structure:
 ```{r}
 df <- read_csv("https://raw.githubusercontent.com/sverhees/master_villages/master/data/merged_all_census_and_samira.csv")
 df %>% 
-  filter(Republic == "Daghestan",
-         !is.na(koryakov_db_id)) %>% 
+  filter(!is.na(koryakov_db_id)) %>% 
   select(-Region) ->
   filtered_df
 
 filtered_df %>% 
-  write_csv("data/filtered_data.csv")
+  write_csv("data/filtered_data.csv", na = "")
 
 str(filtered_df)
 colnames(filtered_df)
 ```
-* `koryakov_db_id`
-* `eng_vil_name`
-* `rus_vil_name`
-* `lang_1_K`
-* `lang_2_K`
-* `lang_1_S`
-* `lang_2_S`
-* `same_languages`
-* `name_1885`
-* `name_1895`
-* `name_1926`
-* `name_2010`
-* `census_1885`
-* `census_1895`
-* `census_1926`
-* `census_2010`
-* `Lat`
-* `Lon`
-* `Republic`
-* `Region`
-* `elevation`
+
+* `koryakov_db_id` -- id info from Y. Koryakov database
+* `eng_vil_name` -- English village name from Samira's db
+* `rus_vil_name` -- Russian village name from Y. Koryakov's db
+* `lang_1_K` -- lanuage according to Y. Koryakov
+* `lang_2_K` -- dialect info according to Y. Koryakov
+* `lang_1_S` -- language according to S. Verhess
+* `lang_2_S` -- dialect info according to S. Verhess
+* `same_languages` -- compare  lang_1_K and lang_1_S; need to be checked by someone; after this check we will come up with a new column with language information
+* `name_1885` -- village name from 1885 census (from Y. Koryakov)
+* `name_1895` -- village name from 1895 census (from Y. Koryakov)
+* `name_1926` -- village name from 1926 census (from Y. Koryakov)
+* `name_2010` -- village name from 2010 census (from Y. Koryakov)
+* `census_1885` -- number of people from 1885 census (from Y. Koryakov)
+* `census_1895` -- number of people from 1895 census (from Y. Koryakov)
+* `census_1926` -- number of people from 1926 census (from Y. Koryakov)
+* `census_2010` -- number of people from 2010 census (from Y. Koryakov)
+* `Lat` -- latitude (from S. Verhess)
+* `Lon` -- longitude (from S. Verhess)
+* `Republic` --  info about Republic (from S. Verhees)
+* `elevation` -- elevation data (collected by G. Moroz from Google)
+LevK_comments -- comments by student who made a correspondence between Y. Koryakov's and S. Verhess's dataset. Sometime there is info about duplicates and so on.
