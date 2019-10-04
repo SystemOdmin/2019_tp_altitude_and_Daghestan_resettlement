@@ -14,6 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r, message = FALSE}
 library(tidyverse)
 theme_set(theme_bw())
+options(scipen = 999)
 ```
 
 
@@ -59,11 +60,31 @@ str(filtered_df)
 * `Republic` --  info about Republic (from S. Verhees)
 * `elevation` -- elevation data (collected by G. Moroz from Google)
 
-## Correlation of altitude and number of people
+## Nationality by language
 
 ```{r}
 df <- read_csv("data/filtered_data.csv")
 df %>% 
-  select()
+  filter(!str_detect(rus_vil_name, "Махачкала|Дербент|Буйнакск|Хасавюрт|Каспийск|Избербаш|Кизляр|Кизилюрт|Дагестанские Огни|Южно-Сухокумск")) %>%  # remove big cities
+  select(koryakov_bd_id, rus_vil_name, lang_1_K, census_1885, census_1895, census_1926, census_2010) %>% 
+  filter(!is.na(lang_1_K)) %>% 
+  group_by(lang_1_K) %>% 
+  summarise(c_1885 = sum(census_1885, na.rm = TRUE),
+            c_1895 = sum(census_1895, na.rm = TRUE),
+            c_1926 = sum(census_1926, na.rm = TRUE),
+            c_2010 = sum(census_2010, na.rm = TRUE),
+            sum = sum(c_1885, c_1895, c_1926, c_2010)) %>% 
+  pivot_longer(names_to = "census", values_to = "n_people", c_1885:c_2010) %>% 
+  mutate(lang_1_K = reorder(lang_1_K, sum)) %>% 
+  ggplot(aes(lang_1_K, n_people, color = census, group = census))+
+  geom_point()+
+  geom_line()+
+  coord_flip()+
+  scale_y_log10()+
+  labs(x = "", y = "n people (log scale)")
 ```
+
+## Differences in census
+
+## map
 
