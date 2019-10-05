@@ -8,7 +8,7 @@ editor_options:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, fig.width= 12, fig.height = 9, warning = FALSE, message = FALSE)
 ```
 
 ```{r, message = FALSE}
@@ -62,8 +62,14 @@ str(filtered_df)
 
 ## Nationality by language
 
+First we decided to look is there any patterns in census based on natianlity. We decided to remove big sities since there is no any good infromation about languages in use:
+
 ```{r}
 df <- read_csv("data/filtered_data.csv")
+df %>% 
+  filter(lang_1_K != "Nogai") ->
+  df
+
 df %>% 
   filter(!str_detect(rus_vil_name, "Махачкала|Дербент|Буйнакск|Хасавюрт|Каспийск|Избербаш|Кизляр|Кизилюрт|Дагестанские Огни|Южно-Сухокумск")) %>%  # remove big cities
   select(koryakov_bd_id, rus_vil_name, lang_1_K, census_1885, census_1895, census_1926, census_2010) %>% 
@@ -81,10 +87,87 @@ df %>%
   geom_line()+
   coord_flip()+
   scale_y_log10()+
-  labs(x = "", y = "n people (log scale)")
+  labs(x = "", y = "number of people (log scale)")
 ```
 
+As we can see, Russians have a peack in early censuses -- it possible that they haven't been living in some settlement at this time. It is possible to see some picks of the last census:
+
+* amount of Kumyk, Azerbaijani, Russian, Botlikh, Tat and Hinuq speakers is significantly increased comparing to other languages
+* amount of Lak a Nogai people significantly decreased
+* all others are more or less the same.
+
+Sometimes the increasing of speakers reported by census could be correlated with some patriotic movements, that e. g. resulted the increase of Botlikh (Samira Verhees personal communication).
+
 ## Differences in census
+```{r}
+df %>% 
+  filter(!str_detect(rus_vil_name, "Махачкала|Дербент|Буйнакск|Хасавюрт|Каспийск|Избербаш|Кизляр|Кизилюрт|Дагестанские Огни|Южно-Сухокумск")) %>%  # remove big cities
+  select(koryakov_bd_id, rus_vil_name, lang_1_K, census_1885, census_1895, census_1926, census_2010) %>% 
+  filter(!is.na(lang_1_K)) %>% 
+  group_by(lang_1_K) %>% 
+  summarise(c_1895_1885 = sum(census_1895, na.rm = TRUE) - sum(census_1885, na.rm = TRUE),
+            c_1926_1895 = sum(census_1926, na.rm = TRUE)- sum(census_1895, na.rm = TRUE),
+            c_2010_1926 = sum(census_2010, na.rm = TRUE) - sum(census_1926, na.rm = TRUE),
+            sum = sum(census_1885, census_1895, census_1926, census_2010)) %>% 
+    pivot_longer(names_to = "census_diff", values_to = "n_people", c_1895_1885:c_2010_1926) %>% 
+  mutate(lang_1_K = reorder(lang_1_K, sum)) %>% 
+  ggplot(aes(lang_1_K, n_people)) +
+  geom_point()+
+  coord_flip()+
+  labs(x = "", y = "difference in number of people")+
+  facet_wrap(~census_diff, scales = "free_x")
+```
+
+long discription of results...
+
+Lets have a look at the correlation between elevation and census data
+
+```{r, fig.height=25, warning=FALSE}
+df %>% 
+  filter(!str_detect(rus_vil_name, "Махачкала|Дербент|Буйнакск|Хасавюрт|Каспийск|Избербаш|Кизляр|Кизилюрт|Дагестанские Огни|Южно-Сухокумск")) %>%  # remove big cities
+  select(koryakov_bd_id, rus_vil_name, lang_1_K, census_1885, census_1895, census_1926, census_2010, elevation) %>% 
+  filter(!is.na(lang_1_K)) %>% 
+  mutate(c_1895_1885 = census_1895 - census_1885,
+            c_1926_1895 = census_1926 - census_1895,
+            c_2010_1926 = census_2010 - census_1926) %>% 
+  select(-c(census_1885, census_1895, census_1926, census_2010)) %>% 
+  pivot_longer(names_to = "census_diff", values_to = "n_diff_people", c_1895_1885:c_2010_1926)  %>% 
+  ggplot(aes(n_diff_people, elevation)) +
+  geom_point()+
+  geom_smooth(method = "lm") +
+  facet_grid(lang_1_K~census_diff)+
+  theme(legend.position = "bottom")
+```
+
+If there are more points greater then 0, then amount of people increase, otherwise -- decrease. If there were any effect of elivation on number of speakers, then we would see some trend on a graph (a lot of points evenly distributed alongside blue line that should be not parallel with axis x). This could be seen only in case of Avar in differences from census 1926 to census 2010.
+
+Conclussion: according to data there is no any clear connection between elivation and resettlement.
 
 ## map
 
+Is there any clear areal pattern of negative or positive value for resettlement? We use only differences from census 1926 to census 2010.
+
+```{r, cache=TRUE}
+df %>% 
+  filter(!str_detect(rus_vil_name, "Махачкала|Дербент|Буйнакск|Хасавюрт|Каспийск|Избербаш|Кизляр|Кизилюрт|Дагестанские Огни|Южно-Сухокумск")) %>%  # remove big cities
+  select(koryakov_bd_id, rus_vil_name, lang_1_K, census_1885, census_1895, census_1926, census_2010, elevation, Lat, Lon) %>% 
+  filter(!is.na(lang_1_K),
+         !str_detect(lang_1_K, "тат+"),
+         !is.na(Lat),
+         !is.na(Lon)) %>% 
+  mutate(c_2010_1926 = census_2010 - census_1926,
+         positive = ifelse(c_2010_1926 > 0, "population increased", "population decreased")) ->
+  df_for_plot
+
+library(lingtypology)
+map <- map.feature(languages = df_for_plot$lang_1_K,
+                   latitude = df_for_plot$Lat,
+                   longitude = df_for_plot$Lon,
+                   features = df_for_plot$c_2010_1926,
+                   facet = df_for_plot$positive)
+  
+library(mapview)
+sync(map, no.initial.sync = FALSE)
+```
+
+It looks like that the distiributions of auls where population increased/decreased don't have any areal pattern. But it could be said, that the only strange area are sea coast (that has better life conditions) and Russian-Georgian and Russian-Azerbaijani borders. Why borders?..
