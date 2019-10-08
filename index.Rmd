@@ -27,16 +27,21 @@ A dataset provided by [Samira Verhees 2019] could be found [here](https://github
 The result dataset has the following structure:
 
 ```{r, message=FALSE}
-df <- read_csv("data/merged_all_census_and_samira.csv")
+df <- read_csv2("data/merged_all_filtered.csv")
 df %>% 
-  filter(Republic == "Daghestan") %>% 
-  distinct()->
-  filtered_df
+  filter(koryakov_bd_id > 7999 | koryakov_bd_id < 7000) ->
+  df
 
-filtered_df %>% 
+read_csv2("data/filtered_data_new.csv",) %>% 
+  distinct(koryakov_bd_id, lang_1_K) %>% 
+  right_join(df) %>%  
+  rename(lang_1_S = Language,
+         census_1885 = censuses.1885.people,
+         census_1895 = censuses.1895.people,
+         census_1926 = censuses.1926.people,
+         census_2010 = censuses.2010.people) %>% 
+  select(-Region, -Republic, -Lect) %>% 
   write_csv("data/filtered_data.csv", na = "")
-
-str(filtered_df)
 ```
 
 * `koryakov_db_id` -- id info from Y. Koryakov database
@@ -47,17 +52,12 @@ str(filtered_df)
 * `lang_1_S` -- language according to S. Verhess
 * `lang_2_S` -- dialect info according to S. Verhess
 * `same_languages` -- compare  lang_1_K and lang_1_S; need to be checked by someone; after this check we will come up with a new column with language information
-* `name_1885` -- village name from 1885 census (from Y. Koryakov)
-* `name_1895` -- village name from 1895 census (from Y. Koryakov)
-* `name_1926` -- village name from 1926 census (from Y. Koryakov)
-* `name_2010` -- village name from 2010 census (from Y. Koryakov)
 * `census_1885` -- number of people from 1885 census (from Y. Koryakov)
 * `census_1895` -- number of people from 1895 census (from Y. Koryakov)
 * `census_1926` -- number of people from 1926 census (from Y. Koryakov)
 * `census_2010` -- number of people from 2010 census (from Y. Koryakov)
 * `Lat` -- latitude (from S. Verhess)
 * `Lon` -- longitude (from S. Verhess)
-* `Republic` --  info about Republic (from S. Verhees)
 * `elevation` -- elevation data (collected by G. Moroz from Google)
 
 ## Nationality by language
@@ -79,7 +79,7 @@ df %>%
             c_1895 = sum(census_1895, na.rm = TRUE),
             c_1926 = sum(census_1926, na.rm = TRUE),
             c_2010 = sum(census_2010, na.rm = TRUE),
-            sum = sum(c_1885, c_1895, c_1926, c_2010)) %>% 
+            sum = sum(c_1885, c_1895, c_1926, c_2010, na.rm = TRUE)) %>% 
   pivot_longer(names_to = "census", values_to = "n_people", c_1885:c_2010) %>% 
   mutate(lang_1_K = reorder(lang_1_K, sum)) %>% 
   ggplot(aes(lang_1_K, n_people, color = census, group = census))+
@@ -108,7 +108,7 @@ df %>%
   summarise(c_1895_1885 = sum(census_1895, na.rm = TRUE) - sum(census_1885, na.rm = TRUE),
             c_1926_1895 = sum(census_1926, na.rm = TRUE)- sum(census_1895, na.rm = TRUE),
             c_2010_1926 = sum(census_2010, na.rm = TRUE) - sum(census_1926, na.rm = TRUE),
-            sum = sum(census_1885, census_1895, census_1926, census_2010)) %>% 
+            sum = sum(census_1885, census_1895, census_1926, census_2010, na.rm = TRUE)) %>% 
     pivot_longer(names_to = "census_diff", values_to = "n_people", c_1895_1885:c_2010_1926) %>% 
   mutate(lang_1_K = reorder(lang_1_K, sum)) %>% 
   ggplot(aes(lang_1_K, n_people)) +
