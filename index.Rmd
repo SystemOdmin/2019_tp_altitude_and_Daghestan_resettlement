@@ -67,7 +67,10 @@ First we decided to look is there any patterns in census based on natianlity. We
 ```{r}
 df <- read_csv("data/filtered_data.csv")
 df %>% 
-  filter(lang_1_K != "Nogai") ->
+  filter(lang_1_K != "Nogai",
+         lang_1_K != "Russian",
+         lang_1_K != "Chechen",
+         lang_1_K != "тат+") ->
   df
 
 df %>% 
@@ -105,16 +108,18 @@ df %>%
   select(koryakov_bd_id, rus_vil_name, lang_1_K, census_1885, census_1895, census_1926, census_2010) %>% 
   filter(!is.na(lang_1_K)) %>% 
   group_by(lang_1_K) %>% 
-  summarise(c_1895_1885 = sum(census_1895, na.rm = TRUE) - sum(census_1885, na.rm = TRUE),
-            c_1926_1895 = sum(census_1926, na.rm = TRUE)- sum(census_1895, na.rm = TRUE),
-            c_2010_1926 = sum(census_2010, na.rm = TRUE) - sum(census_1926, na.rm = TRUE),
+  summarise(c_1895_1885 = (sum(census_1895, na.rm = TRUE) - sum(census_1885, na.rm = TRUE))/sum(census_1885, na.rm = TRUE)*100,
+            c_1926_1895 = (sum(census_1926, na.rm = TRUE)- sum(census_1895, na.rm = TRUE))/sum(census_1895, na.rm = TRUE)*100,
+            c_2010_1926 = (sum(census_2010, na.rm = TRUE) - sum(census_1926, na.rm = TRUE))/sum(census_1926, na.rm = TRUE)*100,
+            c_2010_1885 = (sum(census_2010, na.rm = TRUE) - sum(census_1885, na.rm = TRUE))/sum(census_1885, na.rm = TRUE)*100,
             sum = sum(census_1885, census_1895, census_1926, census_2010, na.rm = TRUE)) %>% 
-    pivot_longer(names_to = "census_diff", values_to = "n_people", c_1895_1885:c_2010_1926) %>% 
-  mutate(lang_1_K = reorder(lang_1_K, sum)) %>% 
+    pivot_longer(names_to = "census_diff", values_to = "n_people", c_1895_1885:c_2010_1885) %>% 
+  mutate(lang_1_K = reorder(lang_1_K, sum),
+         census_diff = factor(census_diff, levels = c("c_1895_1885", "c_1926_1895", "c_2010_1926", "c_2010_1885"))) %>%
   ggplot(aes(lang_1_K, n_people)) +
   geom_point()+
   coord_flip()+
-  labs(x = "", y = "difference in number of people")+
+  labs(x = "", y = "growth/decline of population in percents")+
   facet_wrap(~census_diff, scales = "free_x")
 ```
 
