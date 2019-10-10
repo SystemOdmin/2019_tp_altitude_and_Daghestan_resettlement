@@ -27,7 +27,7 @@ A dataset provided by [Samira Verhees 2019] could be found [here](https://github
 The result dataset has the following structure:
 
 ```{r, message=FALSE}
-df <- read_csv2("data/merged_all_filtered.csv")
+df <- read_csv("data/merged_all_filtered.csv")
 df %>% 
   filter(koryakov_bd_id > 7999 | koryakov_bd_id < 7000) ->
   df
@@ -127,7 +127,7 @@ long discription of results...
 
 Lets have a look at the correlation between elevation and census data
 
-```{r, fig.height=25, warning=FALSE}
+```{r, fig.height=30, warning=FALSE}
 df %>% 
   filter(!str_detect(rus_vil_name, "Махачкала|Дербент|Буйнакск|Хасавюрт|Каспийск|Избербаш|Кизляр|Кизилюрт|Дагестанские Огни|Южно-Сухокумск")) %>%  # remove big cities
   select(koryakov_bd_id, rus_vil_name, lang_1_K, census_1885, census_1895, census_1926, census_2010, elevation) %>% 
@@ -161,7 +161,9 @@ df %>%
          !is.na(Lat),
          !is.na(Lon)) %>% 
   mutate(c_2010_1926 = census_2010 - census_1926,
-         positive = ifelse(c_2010_1926 > 0, "population increased", "population decreased")) ->
+         positive = ifelse(c_2010_1926 > 0, "population increased", "population decreased")) %>% 
+  select(lang_1_K, Lat, Lon, c_2010_1926, positive) %>% 
+  na.omit() ->
   df_for_plot
 
 library(lingtypology)
@@ -172,7 +174,39 @@ map <- map.feature(languages = df_for_plot$lang_1_K,
                    facet = df_for_plot$positive)
   
 library(mapview)
-sync(map, no.initial.sync = FALSE)
+# sync(map, no.initial.sync = FALSE)
 ```
 
+<br>
+
 It looks like that the distiributions of auls where population increased/decreased don't have any areal pattern. But it could be said, that the only strange area are sea coast (that has better life conditions) and Russian-Georgian and Russian-Azerbaijani borders. Why borders?..
+
+
+Here are maps with ratio
+
+```{r, fig.width=20, fig.height = 12}
+df %>% 
+  filter(!str_detect(rus_vil_name, "Махачкала|Дербент|Буйнакск|Хасавюрт|Каспийск|Избербаш|Кизляр|Кизилюрт|Дагестанские Огни|Южно-Сухокумск")) %>%  # remove big cities
+  select(koryakov_bd_id, rus_vil_name, lang_1_K, census_1885, census_1895, census_1926, census_2010, elevation, Lat, Lon) %>% 
+  filter(!is.na(lang_1_K),
+         !str_detect(lang_1_K, "тат+"),
+         !is.na(Lat),
+         !is.na(Lon)) %>% 
+  mutate(c_2010_1926 = ((census_2010 - census_1926)/census_1926)*100,
+         positive = ifelse(c_2010_1926 > 0, "population increased in %", "population decreased in %"),
+         positive = ifelse(c_2010_1926 > 500, "population drastically increased in %", positive)) %>% 
+  select(lang_1_K, Lat, Lon, c_2010_1926, positive) %>% 
+  na.omit() ->
+  df_for_plot
+
+library(lingtypology)
+map <- map.feature(languages = df_for_plot$lang_1_K,
+                   latitude = df_for_plot$Lat,
+                   longitude = df_for_plot$Lon,
+                   features = df_for_plot$c_2010_1926,
+                   facet = df_for_plot$positive)
+  
+library(mapview)
+sync(map, no.initial.sync = FALSE, ncol = 3)
+```
+
