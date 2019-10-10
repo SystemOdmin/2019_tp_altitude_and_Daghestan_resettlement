@@ -171,6 +171,7 @@ map <- map.feature(languages = df_for_plot$lang_1_K,
                    latitude = df_for_plot$Lat,
                    longitude = df_for_plot$Lon,
                    features = df_for_plot$c_2010_1926,
+                   label = df_for_plot$rus_vil_name,
                    facet = df_for_plot$positive)
   
 library(mapview)
@@ -202,8 +203,10 @@ df %>%
 library(lingtypology)
 map <- map.feature(languages = df_for_plot$lang_1_K,
                    latitude = df_for_plot$Lat,
-                   longitude = df_for_plot$Lon,
+                   longitude = df_for_plot$Lon, 
+                   tile = "OpenTopoMap",
                    features = df_for_plot$c_2010_1926,
+                   label = df_for_plot$rus_vil_name,
                    facet = df_for_plot$positive)
   
 library(mapview)
